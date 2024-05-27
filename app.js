@@ -5,6 +5,7 @@ const dbConnection =require('./config/dbConnection')
 dotenv.config();
 const port = 3000
 const userRouter =require('./routers/userRouter')
+const adminRouter =require('./routers/adminRouter')
 const cors =require('cors')
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -14,7 +15,7 @@ const corsOption ={
 };
 app.use(cors())
 app.use('/',userRouter)
-
+app.use('/',adminRouter)
 
 dbConnection().then(()=>{
     app.listen(port,()=>{
