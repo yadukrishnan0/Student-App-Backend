@@ -17,6 +17,11 @@ app.use(cors())
 app.use('/',userRouter)
 app.use('/',adminRouter)
 
+app.use((err,req,res,next)=>{
+    console.log(err)
+    res.status(500).json({success:false,message:'internal server error'})
+});
+
 dbConnection().then(()=>{
     app.listen(port,()=>{
         console.log(`server running ${port}`)

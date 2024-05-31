@@ -4,7 +4,7 @@ const adminModel = require("../models/adminSchema");
 const userModel = require("../models/usersSchema");
 const courseModel = require("../models/courseSchema");
 module.exports = {
-  adminSignupPost: async (req, res) => {
+  adminSignupPost: async (req, res,next) => {
     try {
       const { name, email, password, confirmPassword } = req.body;
       const exisistUser = await adminModel.findOne({ email: email });
@@ -36,19 +36,19 @@ module.exports = {
           .json({ success: true, message: "user admin success is ture" });
       }
     } catch (Err) {
-      console.log(" adminSignupPost", Err);
+      next(Err)
     }
   },
-  studentsGet: async (req, res) => {
+  studentsGet: async (req, res,next) => {
     try {
       const studentsDetails = await userModel.find({});
       res.status(200).json({ success: true, studentsDetails: studentsDetails });
     } catch (err) {
-      console.log("students get", err);
+      next(err)
     }
   },
 
-  coursePost: async (req, res) => {
+  coursePost: async (req, res,next) => {
     try {
       console.log(req.body);
       const { Coursename, fee, Description, teachername } = req.body;
@@ -61,29 +61,27 @@ module.exports = {
       await course.save();
       res.status(200).json({ success: true });
     } catch (err) {
-      console.log("course post", err);
+      next(err)
     }
   },
-  courseGet: async (req, res) => {
+  courseGet: async (req, res,err) => {
     try {
       const courseData = await courseModel.find({});
       res.status(200).json({ success: true, courseData: courseData });
     } catch (err) {
-      console.log("courseGet", err);
-      res.status(400).json({ success: false });
+     next(err)
     }
   },
-  editCourseGet: async (req, res) => {
+  editCourseGet: async (req, res,next) => {
     try {
       const id = req.query.courseId;
       const courseData = await courseModel.findOne({ _id: id });
       res.status(200).json({ success: true, courseData: courseData });
     } catch (err) {
-      console.log(err);
-      res.status(400).json({ success: false });
+    next(err);
     }
   },
-  editCoursePost: async (req, res) => {
+  editCoursePost: async (req, res,next) => {
     try {
       console.log("editeeee ciomeene");
       const id = req.query.courseId;
@@ -102,26 +100,26 @@ module.exports = {
         { new: true }
       );
 
-      console.log(update);
+    
 
       res.status(200).json({ success: true });
     } catch (err) {
-      console.log(" editCoursePost", err);
+       next(err)
     }
   },
 
   //deleting course
-  deleteCourse: async (req, res) => {
+  deleteCourse: async (req, res,next) => {
     try {
       const id = req.query.courseId;
       await courseModel.deleteOne({ _id: id });
       res.status(200).json({ success: true });
     } catch (err) {
-      console.log("deleteCourse", err);
+      next(err)
     }
   },
 
-  loginPost:async(req,res)=>{
+  loginPost:async(req,res,next)=>{
     try {
       const { email, password } = req.body;
       const userExist = await  adminModel.findOne({ email: email });
@@ -142,7 +140,7 @@ module.exports = {
         res.status(200).json({ token });
       }
     } catch (err) {
-      console.log("loginpost", err);
+      next(err)
     }
   },
 };

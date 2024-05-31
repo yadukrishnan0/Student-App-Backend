@@ -5,7 +5,7 @@ const usersModel = require("../models/usersSchema");
 const jwt = require("jsonwebtoken");
 module.exports = {
   //user signup
-  userSignupPost: async (req, res) => {
+  userSignupPost: async (req, res,next) => {
     try {
       const { name, email, password, confirmPassword } = req.body;
       const exisistUser = await UsersModel.findOne({ email: email });
@@ -33,10 +33,10 @@ module.exports = {
         await newUser.save();
       }
     } catch (Err) {
-      console.log(Err);
+      next(Err)
     }
   },
-  loginPost: async (req, res) => {
+  loginPost: async (req, res,next) => {
     
     try {
       const { email, password } = req.body;
@@ -58,7 +58,7 @@ module.exports = {
         res.status(200).json({ token });
       }
     } catch (err) {
-      console.log("loginpost", err);
+      next(err)
     }
   },
 };
